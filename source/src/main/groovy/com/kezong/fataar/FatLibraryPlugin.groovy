@@ -65,11 +65,13 @@ class FatLibraryPlugin implements Plugin<Project> {
                 printUnResolveArtifactsInfo(commonUnResolveArtifacts)
             }
             project.android.libraryVariants.all { variant ->
+                if (!variant.getBuildType().name.contains('release')) return
+
                 String buildTypeConfigName = variant.getBuildType().name + CONFIG_SUFFIX
-                Configuration buildTypeConfiguration 
+                Configuration buildTypeConfiguration
                 try {
                     buildTypeConfiguration = project.configurations.getByName(buildTypeConfigName)
-                } catch(Exception ignored) {
+                } catch (Exception ignored) {
                     Utils.logAnytime("Ignored configuration " + buildTypeConfigName)
                 }
 
