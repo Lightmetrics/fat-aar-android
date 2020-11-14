@@ -68,10 +68,10 @@ class FatLibraryPlugin implements Plugin<Project> {
                 if (!variant.getBuildType().name.contains('release')) return
 
                 String buildTypeConfigName = variant.getBuildType().name + CONFIG_SUFFIX
-                Configuration buildTypeConfiguration
+                Configuration buildTypeConfiguration 
                 try {
                     buildTypeConfiguration = project.configurations.getByName(buildTypeConfigName)
-                } catch (Exception ignored) {
+                } catch(Exception ignored) {
                     Utils.logAnytime("Ignored configuration " + buildTypeConfigName)
                 }
 
@@ -146,7 +146,7 @@ class FatLibraryPlugin implements Plugin<Project> {
     private void createConfiguration(Configuration embedConf) {
         embedConf.visible = false
         embedConf.transitive = false
-        project.gradle.addListener(new ConfigurationDependencyResolutionListener(project, embedConf))
+        project.gradle.addListener(new EmbedDependencyListener(project, embedConf))
     }
 
     private Set<ResolvedArtifact> resolveArtifacts(Configuration configuration) {

@@ -52,12 +52,15 @@ public class LibraryManifestMerger extends InvokeManifestMerger {
     @TaskAction
     protected void doFullTaskAction() throws ManifestMerger2.MergeFailureException, IOException {
         ILogger iLogger = new LoggerWrapper(getLogger());
-        ManifestMerger2.Invoker<?> mergerInvoker = ManifestMerger2.
+        ManifestMerger2.Invoker mergerInvoker = ManifestMerger2.
                 newMerger(getMainManifestFile(), iLogger, ManifestMerger2.MergeType.LIBRARY);
         List<File> secondaryManifestFiles = getSecondaryManifestFiles();
         List<ManifestProvider> manifestProviders = new ArrayList<>();
         if (secondaryManifestFiles != null) {
             for (final File file : secondaryManifestFiles) {
+                if (!file.exists()) {
+                    continue;
+                }
                 manifestProviders.add(new ManifestProvider() {
                     @Override
                     public File getManifest() {

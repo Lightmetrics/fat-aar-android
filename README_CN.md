@@ -2,7 +2,7 @@
 [![license](http://img.shields.io/badge/license-Apache2.0-brightgreen.svg?style=flat)](https://github.com/kezong/fat-aar-android/blob/master/LICENSE)
 [![Download](https://api.bintray.com/packages/kezong/maven/fat-aar/images/download.svg)](https://bintray.com/kezong/maven/fat-aar/_latestVersion)
 
-该插件提供了将library以及它依赖的module一起打包成一个完整aar的解决方案，支持gradle plugin 3.0.1及以上。（目前测试的版本范围是gradle plugin 3.0.1 - 4.0.0，gradle 4.6 - 6.1.1）
+该插件提供了将library以及它依赖的module一起打包成一个完整aar的解决方案，支持gradle plugin 3.0.1及以上。（目前测试的版本范围是gradle plugin 3.0.1 - 4.1.0，gradle 4.9 - 6.5）
 
 ## 如何使用
 
@@ -17,7 +17,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:xxx'
-        classpath 'com.kezong:fat-aar:1.2.15'
+        classpath 'com.kezong:fat-aar:1.2.19'
     }
 }
 ```
@@ -96,6 +96,7 @@ AAR是Android提供的一种官方文件形式；
 - [x] jni合并
 - [x] R.txt合并
 - [x] R.class合并
+- [x] databinding合并
 - [ ] proguard合并（混淆合并现在看来有些问题，建议将所有混淆文件都写在主Library中）
 
 ## Gradle版本支持
@@ -104,15 +105,34 @@ AAR是Android提供的一种官方文件形式；
 | :--------: | :--------:|:-------:|
 | 1.0.1 | 3.1.0 - 3.2.1 | 4.4-6.0 |
 | 1.1.6 | 3.1.0 - 3.4.1 | 4.4-6.0 |
-| 1.1.10| 3.0.1 - 3.4.1 | 4.1-6.0 |
-| 1.2.6 | 3.0.1 - 3.5.0 | 4.1-6.0 |
-| 1.2.8 | 3.0.1+ | 4.1+ |
-| 1.2.11+ | 3.6.0+ | 5.4.1+ |
-| 1.2.15 | 4.0.0+ | 6.1.1+ |
+| 1.1.10| 3.0.0 - 3.4.1 | 4.1-6.0 |
+| 1.2.6 | 3.0.0 - 3.5.0 | 4.1-6.0 |
+| 1.2.8 | 3.0.0 - 3.5.9 | 4.1+ |
+| 1.2.11 - 1.2.14 | 3.0.0 - 3.6.9 | 4.1+ |
+| 1.2.15 - 1.2.16 | 3.0.0 - 4.0.2 | 4.1+ |
+| 1.2.17 | 3.0.0 - 4.0.2 | 4.9+ |
+| 1.2.18+ | 3.0.0 - 4.1.0 | 4.9+ |
 
 [Gradle Plugin和所需求的Gradle版本官方文档](https://developer.android.google.cn/studio/releases/gradle-plugin.html)
 
 ## 更新日志
+- [1.2.20](<https://github.com/kezong/fat-aar-android/releases/tag/v1.2.20>)
+  - 修复获取产物名时的空指针异常. [#214](https://github.com/kezong/fat-aar-android/issues/214)
+  - r-classes.jar重命名，加上包名作为前缀.
+- [1.2.19](<https://github.com/kezong/fat-aar-android/releases/tag/v1.2.19>)
+  - 支持embed没有class.jar的aar [#157](https://github.com/kezong/fat-aar-android/issues/158)
+  - 支持embed没有AndroidManifest.xml的aar [#206](https://github.com/kezong/fat-aar-android/issues/206)
+  - 修复上传至maven时，R.class未包含进aar的BUG [#200](https://github.com/kezong/fat-aar-android/issues/200)
+- [1.2.18](<https://github.com/kezong/fat-aar-android/releases/tag/v1.2.18>)
+  - 适配gradle plugin 4.1.0 [#201](https://github.com/kezong/fat-aar-android/issues/201)
+- [1.2.17](<https://github.com/kezong/fat-aar-android/releases/tag/v1.2.17>)
+  - 支持databinding合并 [#25](https://github.com/kezong/fat-aar-android/issues/25) [#67](https://github.com/kezong/fat-aar-android/issues/67) [#142](https://github.com/kezong/fat-aar-android/issues/142)
+  - Use Gradle's configuration avoidance APIs [#195](https://github.com/kezong/fat-aar-android/issues/195)
+  - Support incremental build [#199](https://github.com/kezong/fat-aar-android/issues/199) [#185](https://github.com/kezong/fat-aar-android/issues/185)
+  - Fix wrong directory for aar's jar libs [#154](https://github.com/kezong/fat-aar-android/issues/154)
+- [1.2.16](<https://github.com/kezong/fat-aar-android/releases/tag/v1.2.16>)
+  - 修复gradle plugin版本不在根目录下就找不到的问题 [#172](https://github.com/kezong/fat-aar-android/issues/172)
+  - 修复在gradle plugin 4.0构建的产物中有可能styleable资源找不到的问题 [#163](https://github.com/kezong/fat-aar-android/issues/163)
 - [1.2.15](<https://github.com/kezong/fat-aar-android/releases/tag/v1.2.15>)
   - 支持gradle plugin 4.0.0 [#147](https://github.com/kezong/fat-aar-android/issues/147)
   - 修复在Android Studio 4.0.0上embed的库无法直接索引源码的问题 [#148](https://github.com/kezong/fat-aar-android/issues/148)

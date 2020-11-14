@@ -6,21 +6,36 @@ import org.gradle.api.artifacts.DependencyResolutionListener
 import org.gradle.api.artifacts.ResolvableDependencies
 import org.gradle.api.internal.artifacts.dependencies.DefaultProjectDependency
 
-class ConfigurationDependencyResolutionListener implements DependencyResolutionListener {
+class EmbedDependencyListener implements DependencyResolutionListener {
 
     private final Project project
 
     private final Configuration configuration
 
-    ConfigurationDependencyResolutionListener(Project project, Configuration configuration) {
+    private final String compileOnlyConfigName;
+
+    EmbedDependencyListener(Project project, Configuration configuration) {
         this.project = project
         this.configuration = configuration
+        String prefix = getConfigNamePrefix(configuration.name)
+        if (prefix != null) {
+            this.compileOnlyConfigName = prefix + "CompileOnly"
+        } else {
+            this.compileOnlyConfigName = "compileOnly"
+        }
+    }
+
+    private String getConfigNamePrefix(String configurationName) {
+        if (configurationName.endsWith(FatLibraryPlugin.CONFIG_SUFFIX)) {
+            return configurationName.substring(0, configuration.name.length() - FatLibraryPlugin.CONFIG_SUFFIX.length())
+        } else {
+            return null
+        }
     }
 
     @Override
     void beforeResolve(ResolvableDependencies resolvableDependencies) {
         configuration.dependencies.each { dependency ->
-
             if (dependency instanceof DefaultProjectDependency) {
                 if (dependency.targetConfiguration == null) {
                     dependency.targetConfiguration = "default"
@@ -28,9 +43,9 @@ class ConfigurationDependencyResolutionListener implements DependencyResolutionL
                 // support that the module can be indexed in Android Studio 4.0.0
                 DefaultProjectDependency dependencyClone = dependency.copy()
                 dependencyClone.targetConfiguration = null;
-
-//                project.dependencies.add('compileOnly', dependencyClone)
-
+                // The purpose is to support the code hints
+                //project.dependencies.add(compileOnlyConfigName, dependencyClone)
+                                
                 Utils.logAnytime('[Dependency name][' + dependencyClone.name + ']')
                 Utils.logAnytime('[Dependency group][' + dependencyClone.group + ']')
                 Utils.logAnytime('[Dependency version][' + dependencyClone.version + ']')
@@ -45,11 +60,12 @@ class ConfigurationDependencyResolutionListener implements DependencyResolutionL
                     //this makes the dependencyClone resolve the flavour and buildType correctly
                     modifiedDependency = project.dependencies.project(map)
                 }
-                project.dependencies.add('compileOnly', modifiedDependency)
+                project.dependencies.add(compileOnlyConfigName, modifiedDependency)
 
             } else {
-//                project.dependencies.add('compileOnly', dependency)
-
+                // The purpose is to support the code hints
+                //project.dependencies.add(compileOnlyConfigName, dependency)
+                
                 Utils.logAnytime('[Dependency name][' + dependency.name + ']')
                 Utils.logAnytime('[Dependency group][' + dependency.group + ']')
                 Utils.logAnytime('[Dependency version][' + dependency.version + ']')
@@ -64,10 +80,10 @@ class ConfigurationDependencyResolutionListener implements DependencyResolutionL
                     //this makes the dependency resolve the flavour and buildType correctly
                     modifiedDependency = project.dependencies.project(map)
                 }
-                project.dependencies.add('compileOnly', modifiedDependency)
+                project.dependencies.add(compileOnlyConfigName, modifiedDependency)
+                
             }
         }
-
         project.gradle.removeListener(this)
     }
 
